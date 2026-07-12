@@ -117,7 +117,10 @@ app.use("/api/contact-messages", require("./routes/contactMessageRoute"));
 app.use("/api/notifications", require("./routes/notificationRoute"));
 app.use("/api/customizations", require("./routes/customizationRoute"));
 app.use("/api/giftbox", require("./routes/giftBoxRoute"));
-
+app.use(
+  "/images",
+  express.static(path.join(__dirname, "../client/assets/images"))
+);
 // ============================================
 // 404 Handler
 // ============================================
