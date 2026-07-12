@@ -1,0 +1,2 @@
+# client/_redirects
+/client/* /:splat 200
