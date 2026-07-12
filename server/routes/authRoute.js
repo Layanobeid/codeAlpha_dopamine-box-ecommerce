@@ -5,67 +5,10 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-}
-Node.js v24.14.1
-==> Deploying...
-==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
-  throw err;
-  ^
-Error: Cannot find module '../models/user.model'
-Require stack:
-- /opt/render/project/src/server/routes/authRoute.js
-- /opt/render/project/src/server/app.js
-    at Module._resolveFilename (node:internal/modules/cjs/loader:1456:15)
-    at defaultResolveImpl (node:internal/modules/cjs/loader:1066:19)
-    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1071:22)
-    at Module._load (node:internal/modules/cjs/loader:1242:25)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
-    at Module.require (node:internal/modules/cjs/loader:1556:12)
-    at require (node:internal/modules/helpers:152:16)
-    at Object.<anonymous> (/opt/render/project/src/server/routes/authRoute.js:7:14)
-    at Module._compile (node:internal/modules/cjs/loader:1812:14)
-    at Object..js (node:internal/modules/cjs/loader:1943:10) {
-  code: 'MODULE_NOT_FOUND',
-  requireStack: [
-    '/opt/render/project/src/server/routes/authRoute.js',
-    '/opt/render/project/src/server/app.js'
-  ]
-}
-Node.js v24.14.1
-==> Exited with status 1
-==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
-}
-Node.js v24.14.1
-==> Deploying...
-==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
-  throw err;
-  ^
-Error: Cannot find module '../models/user.model'
-Require stack:
-- /opt/render/project/src/server/routes/authRoute.js
-- /opt/render/project/src/server/app.js
-    at Module._resolveFilename (node:internal/modules/cjs/loader:1456:15)
-    at defaultResolveImpl (node:internal/modules/cjs/loader:1066:19)
-    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1071:22)
-    at Module._load (node:internal/modules/cjs/loader:1242:25)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
-    at Module.require (node:internal/modules/cjs/loader:1556:12)
-    at require (node:internal/modules/helpers:152:16)
-    at Object.<anonymous> (/opt/render/project/src/server/routes/authRoute.js:7:14)
-    at Module._compile (node:internal/modules/cjs/loader:1812:14)
-    at Object..js (node:internal/modules/cjs/loader:1943:10) {
-  code: 'MODULE_NOT_FOUND',
-  requireStack: [
-    '/opt/render/project/src/server/routes/authRoute.js',
-    '/opt/render/project/src/server/app.js'
-  ]
-}
-Node.js v24.14.1
-==> Exited with status 1
-==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+// ✅ استيراد الموديل الصحيح
+const User = require('../models/User'); // أو '../models/user.model.js'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dopamine_box_secret_key_2024';
-
 
 // ============ REGISTER ============
 router.post('/register', async (req, res) => {
@@ -81,7 +24,6 @@ router.post('/register', async (req, res) => {
             });
         }
 
-        // Check if user exists
         const existingUser = await User.findOne({ email: email.toLowerCase() });
         if (existingUser) {
             return res.status(400).json({
@@ -90,11 +32,9 @@ router.post('/register', async (req, res) => {
             });
         }
 
-        // Hash password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Create new user
         const user = new User({
             fullName,
             email: email.toLowerCase(),
@@ -104,7 +44,6 @@ router.post('/register', async (req, res) => {
 
         await user.save();
 
-        // Generate JWT token
         const token = jwt.sign(
             { userId: user._id, email: user.email },
             JWT_SECRET,
@@ -140,12 +79,10 @@ router.post('/register', async (req, res) => {
 });
 
 // ============ LOGIN ============
-// ============ LOGIN ============
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         console.log('🔑 Login request for:', email);
-        console.log('📝 Password length:', password ? password.length : 0);
 
         if (!email || !password) {
             return res.status(400).json({
@@ -154,7 +91,6 @@ router.post('/login', async (req, res) => {
             });
         }
 
-        // Find user
         const user = await User.findOne({ email: email.toLowerCase() });
         console.log('✅ User found:', user ? user.email : 'No user');
 
@@ -171,8 +107,7 @@ router.post('/login', async (req, res) => {
             fullName: user.fullName,
             role: user.role,
             hasPassword: !!user.password,
-            passwordLength: user.password ? user.password.length : 0,
-            passwordPreview: user.password ? user.password.substring(0, 20) + '...' : 'null'
+            passwordLength: user.password ? user.password.length : 0
         });
 
         if (!user.password) {
@@ -183,12 +118,11 @@ router.post('/login', async (req, res) => {
             });
         }
 
-        // Compare password using bcrypt directly
         let isMatch = false;
         try {
             console.log('🔐 Comparing passwords...');
-         console.log("RAW PASSWORD FROM REQUEST:", password);
-console.log("HASH FROM DB:", user.password);
+            console.log("RAW PASSWORD FROM REQUEST:", password);
+            console.log("HASH FROM DB:", user.password);
             isMatch = await bcrypt.compare(password, user.password);
             console.log('🔐 Password match result:', isMatch);
         } catch (bcryptError) {
@@ -210,11 +144,9 @@ console.log("HASH FROM DB:", user.password);
 
         console.log('✅ Password matched for:', email);
 
-        // Update last login
         user.lastLogin = new Date();
         await user.save();
 
-        // Generate JWT
         const token = jwt.sign(
             { userId: user._id, email: user.email },
             JWT_SECRET,
@@ -250,7 +182,8 @@ console.log("HASH FROM DB:", user.password);
         });
     }
 });
-// ============ SOCIAL TOKEN (for OAuth) ============
+
+// ============ SOCIAL TOKEN ============
 router.post('/social-token', async (req, res) => {
     try {
         const { token, user } = req.body;
