@@ -222,66 +222,67 @@
                 });
             });
         }
+async function loadProduct() {
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('id');
+    
+    console.log('🔍 Product ID from URL:', productId);
+    
+    if (!productId) {
+        container.innerHTML = `
+            <div class="error-container">
+                <span class="icon">❌</span>
+                <h2>No Product ID Provided</h2>
+                <p>Please provide a product ID in the URL.</p>
+                <a href="products.html" class="back-link-product" style="justify-content:center;margin-top:15px;">← Back to Products</a>
+            </div>
+        `;
+        return;
+    }
 
-        async function loadProduct() {
-            const params = new URLSearchParams(window.location.search);
-            const productId = params.get('id');
-            
-            console.log('🔍 Product ID from URL:', productId);
-            
-            if (!productId) {
-                container.innerHTML = `
-                    <div class="error-container">
-                        <span class="icon">❌</span>
-                        <h2>No Product ID Provided</h2>
-                        <p>Please provide a product ID in the URL.</p>
-                        <a href="products.html" class="back-link-product" style="justify-content:center;margin-top:15px;">← Back to Products</a>
-                    </div>
-                `;
-                return;
-            }
+    try {
+        // ✅ الرابط الصحيح
+        const API = 'https://codealpha-dopamine-box-ecommerce.onrender.com';
+        const response = await fetch(`${API}/api/products/${productId}`);
+        const data = await response.json();
+        console.log('📦 Data from API:', data);
 
-            try {
-                const response = await fetch(`const API = https://codealpha-dopamine-box-ecommerce.onrender.com/api/products/${productId}`);
-                const data = await response.json();
-                console.log('📦 Data from API:', data);
-
-                let product = null;
-                if (data.success && data.message && data.message.product) {
-                    product = data.message.product;
-                } else if (data._id) {
-                    product = data;
-                }
-
-                if (!product) {
-                    container.innerHTML = `
-                        <div class="error-container">
-                            <span class="icon">🔍</span>
-                            <h2>Product Not Found</h2>
-                            <p>The product with ID "${productId}" doesn't exist.</p>
-                            <a href="products.html" class="back-link-product" style="justify-content:center;margin-top:15px;">← Back to Products</a>
-                        </div>
-                    `;
-                    return;
-                }
-
-                renderProduct(product);
-
-                const related = data.message?.related || [];
-                renderRelatedProducts(related);
-
-            } catch (error) {
-                console.error('❌ Error loading product:', error);
-                container.innerHTML = `
-                    <div class="error-container">
-                        <span class="icon">⚠️</span>
-                        <h2>Error Loading Product</h2>
-                        <p>${error.message || 'Please try again later.'}</p>
-                        <a href="products.html" class="back-link-product" style="justify-content:center;margin-top:15px;">← Back to Products</a>
-                    </div>
-                `;
-            }
+        let product = null;
+        if (data.success && data.message && data.message.product) {
+            product = data.message.product;
+        } else if (data._id) {
+            product = data;
         }
+
+        if (!product) {
+            container.innerHTML = `
+                <div class="error-container">
+                    <span class="icon">🔍</span>
+                    <h2>Product Not Found</h2>
+                    <p>The product with ID "${productId}" doesn't exist.</p>
+                    <a href="products.html" class="back-link-product" style="justify-content:center;margin-top:15px;">← Back to Products</a>
+                </div>
+            `;
+            return;
+        }
+
+        renderProduct(product);
+
+        const related = data.message?.related || [];
+        renderRelatedProducts(related);
+
+    } catch (error) {
+        console.error('❌ Error loading product:', error);
+        container.innerHTML = `
+            <div class="error-container">
+                <span class="icon">⚠️</span>
+                <h2>Error Loading Product</h2>
+                <p>${error.message || 'Please try again later.'}</p>
+                <a href="products.html" class="back-link-product" style="justify-content:center;margin-top:15px;">← Back to Products</a>
+            </div>
+        `;
+    }
+}
 
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', loadProduct);
