@@ -2,7 +2,7 @@
 const productService = require("../services/product.services");
 const catchAsync = require("../core/catchAsync");
 const ApiResponse = require("../utils/ApiResponse");
-const AppError = require("../core/appError");
+const AppError = require("../core/AppError");
 
 // ============================================
 // PUBLIC ROUTES
