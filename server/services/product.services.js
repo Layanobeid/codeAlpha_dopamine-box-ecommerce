@@ -1,6 +1,6 @@
 // services/product.services.js - COMPLETE
 const Product = require("../models/product.model");
-const AppError = require("../core/appError");
+const AppError = require("../core/AppError");
 
 // ============================================
 // PUBLIC METHODS
