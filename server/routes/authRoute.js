@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 // ✅ استيراد الموديل الصحيح
-const User = require('../models/User'); // أو '../models/user.model.js'
+const User = require('../models/User.model'); // أو '../models/user.model.js'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dopamine_box_secret_key_2024';
 
