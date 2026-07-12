@@ -724,7 +724,7 @@
 
             try {
                 const token = localStorage.getItem('dopamine_token');
-                const url = id ? `http://localhost:5000/api/products/${id}` : 'http://localhost:5000/api/products';
+                const url = id ? `https://codealpha-dopamine-box-ecommerce.onrender.com/api/products/${id}` : 'https://codealpha-dopamine-box-ecommerce.onrender.com/api/products';
                 const method = id ? 'PUT' : 'POST';
 
                 const res = await fetch(url, {
@@ -760,7 +760,7 @@
 
             try {
                 const token = localStorage.getItem('dopamine_token');
-                const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+                const res = await fetch(`'https://codealpha-dopamine-box-ecommerce.onrender.com/api'/products/${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`
