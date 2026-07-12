@@ -4,7 +4,7 @@ const Product = require("../models/product.model");
 const Order = require("../models/order.model");
 const Customization = require("../models/customization.model");
 const User =require("../models/User.model");
-const AppError = require("../core/appError");
+const AppError = require("../core/AppError");
 const logger = require("../core/logger");
 
 /**
