@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Dopamine Box</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .checkout-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .checkout-header {
+            text-align: center;
+            padding: 30px 0;
+        }
+        .checkout-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #222;
+        }
+        .checkout-header p {
+            color: #777;
+            margin-top: 10px;
+        }
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 30px;
+        }
+        .checkout-form {
+            background: #fff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+        .checkout-form h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #333;
+            font-size: 14px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: 0.3s;
+            font-family: inherit;
+            background: #fafafa;
+            box-sizing: border-box;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #ff6b6b;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(255,107,107,0.1);
+            background: #fff;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .order-summary {
+            background: #fff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        .order-summary h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f5f5f5;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f5f5f5;
+            font-size: 14px;
+            gap: 15px;
+        }
+        .order-item .item-info {
+            flex: 1;
+        }
+        .order-item .item-name {
+            color: #333;
+            font-weight: 500;
+        }
+        .order-item .item-qty {
+            color: #888;
+            font-size: 12px;
+        }
+        .order-item .item-price {
+            color: #ff6b6b;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .order-totals {
+            padding: 15px 0;
+            border-top: 2px solid #eee;
+        }
+        .order-totals .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 14px;
+            color: #666;
+        }
+        .order-totals .total-row.grand-total {
+            border-top: 2px solid #eee;
+            padding-top: 15px;
+            margin-top: 5px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #222;
+        }
+        .order-totals .total-row.grand-total .amount {
+            color: #ff6b6b;
+            font-size: 22px;
+        }
+        .place-order-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 15px;
+        }
+        .place-order-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255,107,107,0.3);
+        }
+        .place-order-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .place-order-btn.loading {
+            background: #ff6b6b;
+            opacity: 0.7;
+            cursor: wait;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .empty-cart h2 {
+            font-size: 2rem;
+            color: #555;
+        }
+        .empty-cart p {
+            color: #999;
+            margin: 10px 0 20px;
+        }
+        .order-status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-processing { background: #cce5ff; color: #004085; }
+        .status-shipped { background: #d4edda; color: #155724; }
+        .status-delivered { background: #d4edda; color: #155724; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+        
+        @media (max-width: 768px) {
+            .checkout-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .order-summary {
+                position: static;
+                order: -1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar"></div>
+    
+    <div class="container">
+        <div class="checkout-container">
+            <div class="checkout-header">
+                <a href="index.html" class="back-link">← Back to Shopping</a>
+                <h1>🧾 Checkout</h1>
+                <p>Review your order and complete your purchase</p>
+            </div>
+            
+            <div id="checkoutContent">
+                <div style="text-align:center;padding:40px;color:#999;">Loading your order...</div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="footer"></div>
+    
+    <script type="module">
+        import Navbar from './components/navbar.js';
+        import Footer from './components/footer.js';
+        import { getCart, getCartTotal, clearCart, updateCartBadge } from './assets/js/storage.js';
+        import { getProducts, createOrder } from './assets/js/api.js';
+        
+        Navbar();
+        Footer();
+        
+        let cartItems = [];
+        let allProducts = [];
+        
+        async function loadCheckout() {
+            const cart = getCart();
+            
+            if (cart.length === 0) {
+                document.getElementById('checkoutContent').innerHTML = `
+                    <div class="empty-cart">
+                        <h2>🛒 Your cart is empty</h2>
+                        <p>Add some products to your cart before checking out.</p>
+                        <a href="products.html" class="btn-primary" style="display:inline-block;padding:12px 30px;background:#ff6b6b;color:#fff;border-radius:30px;text-decoration:none;font-weight:600;">
+                            Start Shopping →
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                allProducts = await getProducts();
+                cartItems = cart.map(item => {
+                    const product = allProducts.find(p => (p._id || p.id) === item.productId);
+                    return {
+                        ...item,
+                        product: product || { name: 'Product not found', price: 0, image: '' }
+                    };
+                });
+                
+                renderCheckout();
+            } catch (error) {
+                console.error('Error loading checkout:', error);
+                document.getElementById('checkoutContent').innerHTML = `
+                    <div style="text-align:center;padding:40px;color:#e74c3c;">
+                        ⚠️ Error loading checkout: ${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        function renderCheckout() {
+            const subtotal = cartItems.reduce((sum, item) => {
+                return sum + (item.product?.price || 0) * item.quantity;
+            }, 0);
+            
+            const shipping = subtotal > 50 ? 0 : 5.99;
+            const tax = subtotal * 0.08;
+            const total = subtotal + shipping + tax;
+            
+            document.getElementById('checkoutContent').innerHTML = `
+                <div class="checkout-grid">
+                    <!-- Shipping Form -->
+                    <div class="checkout-form">
+                        <h2>📦 Shipping Information</h2>
+                        <form id="checkoutForm" onsubmit="handlePlaceOrder(event)">
+                            <div class="form-group">
+                                <label for="fullName">Full Name *</label>
+                                <input type="text" id="fullName" placeholder="John Doe" required 
+                                       value="${localStorage.getItem('checkout_name') || 'John Doe'}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">Email Address *</label>
+                                <input type="email" id="email" placeholder="john@example.com" required 
+                                       value="${localStorage.getItem('checkout_email') || 'john@example.com'}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="phone">Phone Number *</label>
+                                <input type="tel" id="phone" placeholder="+961 70 123 456" required 
+                                       value="${localStorage.getItem('checkout_phone') || '+961 70 123 456'}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="address">Street Address *</label>
+                                <input type="text" id="address" placeholder="123 Main Street" required 
+                                       value="${localStorage.getItem('checkout_address') || '123 Main Street'}">
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="city">City *</label>
+                                    <input type="text" id="city" placeholder="Beirut" required 
+                                           value="${localStorage.getItem('checkout_city') || 'Beirut'}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="postalCode">Postal Code</label>
+                                    <input type="text" id="postalCode" placeholder="1234" 
+                                           value="${localStorage.getItem('checkout_postal') || '1234'}">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="country">Country *</label>
+                                <select id="country" required>
+                                    <option value="">Select Country</option>
+                                    <option value="Lebanon" ${localStorage.getItem('checkout_country') === 'Lebanon' ? 'selected' : ''}>Lebanon</option>
+                                    <option value="UAE">UAE</option>
+                                    <option value="Saudi Arabia">Saudi Arabia</option>
+                                    <option value="Kuwait">Kuwait</option>
+                                    <option value="Qatar">Qatar</option>
+                                    <option value="Jordan">Jordan</option>
+                                    <option value="Egypt">Egypt</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="notes">Order Notes (Optional)</label>
+                                <textarea id="notes" placeholder="Any special instructions..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="place-order-btn" id="placeOrderBtn">
+                                📦 Place Order - $${total.toFixed(2)}
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <!-- Order Summary -->
+                    <div class="order-summary">
+                        <h2>📋 Order Summary</h2>
+                        <div id="orderItems">
+                            ${cartItems.map(item => `
+                                <div class="order-item">
+                                    <div class="item-info">
+                                        <div class="item-name">${item.product?.name || 'Unknown'}</div>
+                                        <div class="item-qty">Qty: ${item.quantity}</div>
+                                    </div>
+                                    <div class="item-price">$${((item.product?.price || 0) * item.quantity).toFixed(2)}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="order-totals">
+                            <div class="total-row">
+                                <span>Subtotal</span>
+                                <span>$${subtotal.toFixed(2)}</span>
+                            </div>
+                            <div class="total-row">
+                                <span>Shipping</span>
+                                <span>${shipping === 0 ? 'FREE' : '$' + shipping.toFixed(2)}</span>
+                            </div>
+                            <div class="total-row">
+                                <span>Tax (8%)</span>
+                                <span>$${tax.toFixed(2)}</span>
+                            </div>
+                            <div class="total-row grand-total">
+                                <span>Total</span>
+                                <span class="amount">$${total.toFixed(2)}</span>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top:15px;padding:15px;background:#f8f9fa;border-radius:12px;font-size:13px;color:#666;">
+                            <p style="margin:0;">🔒 Secure checkout with SSL encryption</p>
+                            <p style="margin:5px 0 0;">✅ Free shipping on orders over $50</p>
+                            <p style="margin:5px 0 0;">📦 Estimated delivery: 3-5 business days</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Make handlePlaceOrder global
+            window.handlePlaceOrder = handlePlaceOrder;
+        }
+        
+        async function handlePlaceOrder(event) {
+            event.preventDefault();
+            
+            const btn = document.getElementById('placeOrderBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Processing...';
+            btn.classList.add('loading');
+            
+            try {
+                // Get form data
+                const fullName = document.getElementById('fullName').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const address = document.getElementById('address').value.trim();
+                const city = document.getElementById('city').value.trim();
+                const postalCode = document.getElementById('postalCode').value.trim();
+                const country = document.getElementById('country').value;
+                const notes = document.getElementById('notes').value.trim();
+                
+                // Validate
+                if (!fullName || !email || !phone || !address || !city || !country) {
+                    alert('⚠️ Please fill in all required fields');
+                    btn.disabled = false;
+                    btn.textContent = '📦 Place Order';
+                    btn.classList.remove('loading');
+                    return;
+                }
+                
+                // Calculate totals
+                const subtotal = cartItems.reduce((sum, item) => {
+                    return sum + (item.product?.price || 0) * item.quantity;
+                }, 0);
+                const shipping = subtotal > 50 ? 0 : 5.99;
+                const tax = subtotal * 0.08;
+                const total = subtotal + shipping + tax;
+                
+                // Prepare order data
+                const orderData = {
+                    orderId: 'DB-' + Date.now().toString().slice(-8),
+                    fullName: fullName,
+                    email: email,
+                    phone: phone,
+                    address: address,
+                    city: city,
+                    postalCode: postalCode,
+                    country: country,
+                    notes: notes,
+                    items: cartItems.map(item => ({
+                        productId: item.productId,
+                        name: item.product?.name || 'Unknown',
+                        price: item.product?.price || 0,
+                        quantity: item.quantity,
+                        image: item.product?.image || ''
+                    })),
+                    subtotal: subtotal,
+                    shipping: shipping,
+                    tax: tax,
+                    total: total
+                };
+                
+                // Save form data for next time
+                localStorage.setItem('checkout_name', fullName);
+                localStorage.setItem('checkout_email', email);
+                localStorage.setItem('checkout_phone', phone);
+                localStorage.setItem('checkout_address', address);
+                localStorage.setItem('checkout_city', city);
+                localStorage.setItem('checkout_postal', postalCode);
+                localStorage.setItem('checkout_country', country);
+                
+                // Send order to API
+                console.log('📦 Sending order to API:', orderData);
+                const response = await createOrder(orderData);
+                console.log('✅ Order response:', response);
+                
+                if (response.success) {
+                    // Save order to localStorage as backup
+                    const orders = JSON.parse(localStorage.getItem('dopamine_orders') || '[]');
+                    orders.push({
+                        ...orderData,
+                        orderDate: new Date().toISOString(),
+                        _id: response.data?._id || 'local'
+                    });
+                    localStorage.setItem('dopamine_orders', JSON.stringify(orders));
+                    
+                    // Clear cart
+                    clearCart();
+                    updateCartBadge();
+                    
+                    // Redirect to confirmation
+                    window.location.href = `order-confirmation.html?id=${orderData.orderId}`;
+                } else {
+                    throw new Error(response.message || 'Failed to place order');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error placing order:', error);
+                alert(`⚠️ Error placing order: ${error.message}\n\nPlease try again.`);
+                btn.disabled = false;
+                btn.textContent = '📦 Place Order';
+                btn.classList.remove('loading');
+            }
+        }
+        
+        // Load checkout
+        loadCheckout();
+    </script>
+</body>
+</html>

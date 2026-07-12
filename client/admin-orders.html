@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Orders - Dopamine Box</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .admin-page {
+            padding: 40px 0;
+            min-height: 100vh;
+            background: #f8f9fa;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .admin-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1a1a2e;
+        }
+        .admin-header .back-link {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .orders-grid {
+            display: grid;
+            gap: 20px;
+        }
+        .order-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border: 1px solid rgba(0,0,0,0.04);
+            transition: 0.3s;
+        }
+        .order-card:hover {
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+        .order-card .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .order-card .order-id {
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+        .order-card .order-date {
+            font-size: 0.85rem;
+            color: #999;
+        }
+        .order-card .order-status {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-processing { background: #cce5ff; color: #004085; }
+        .status-shipped { background: #d4edda; color: #155724; }
+        .status-delivered { background: #d1ecf1; color: #0c5460; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+        .order-card .order-total {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #ff6b6b;
+        }
+        .order-card .order-items {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        .order-card .order-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .order-card .order-actions button {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.85rem;
+        }
+        .btn-view {
+            background: #ff6b6b;
+            color: #fff;
+        }
+        .btn-view:hover {
+            background: #ee5a24;
+            transform: translateY(-2px);
+        }
+        .btn-edit {
+            background: #e9ecef;
+            color: #1a1a2e;
+        }
+        .btn-edit:hover {
+            background: #dee2e6;
+            transform: translateY(-2px);
+        }
+        .no-orders {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        .no-orders h2 {
+            font-size: 1.5rem;
+            color: #555;
+        }
+        .filter-bar {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .filter-bar select {
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            outline: none;
+            font-family: inherit;
+            background: #fff;
+        }
+        .filter-bar input {
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            outline: none;
+            font-family: inherit;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* ============================================ */
+        /* ORDER MODAL */
+        /* ============================================ */
+        .order-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .order-modal.active {
+            display: flex;
+        }
+        .order-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 9998;
+        }
+        .order-modal-content {
+            position: relative;
+            z-index: 9999;
+            background: #fff;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            border-radius: 20px;
+            overflow-y: auto;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
+            animation: modalSlideIn 0.3s ease;
+        }
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .order-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid #eee;
+            background: #fafafa;
+            border-radius: 20px 20px 0 0;
+        }
+        .order-modal-header h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin: 0;
+        }
+        .order-modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: #f0f0f0;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+        .order-modal-close:hover {
+            background: #ff6b6b;
+            color: #fff;
+            transform: rotate(90deg);
+        }
+        #orderModalBody {
+            padding: 25px;
+        }
+        .order-detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .order-detail-row:last-child {
+            border-bottom: none;
+        }
+        .order-detail-label {
+            font-weight: 600;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .order-detail-value {
+            font-weight: 600;
+            color: #1a1a2e;
+            text-align: right;
+        }
+        .order-modal-items {
+            margin-top: 15px;
+        }
+        .order-modal-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .order-modal-item:last-child {
+            border-bottom: none;
+        }
+        .order-modal-item .item-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .order-modal-item .item-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #f5f5f5;
+        }
+        .order-modal-item .item-name {
+            font-weight: 600;
+            color: #1a1a2e;
+            font-size: 0.95rem;
+        }
+        .order-modal-item .item-detail {
+            font-size: 0.8rem;
+            color: #999;
+        }
+        .order-modal-item .item-price {
+            font-weight: 700;
+            color: #ff6b6b;
+        }
+        .order-status-update {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+        .order-status-update label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1a1a2e;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .order-status-update select {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            outline: none;
+            font-family: inherit;
+            font-weight: 500;
+            background: #fff;
+            transition: 0.3s;
+        }
+        .order-status-update select:focus {
+            border-color: #ff6b6b;
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+        }
+        .order-status-update .btn-update {
+            margin-top: 10px;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .order-status-update .btn-update:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+        }
+        @media (max-width: 640px) {
+            .order-modal-content {
+                max-width: 100%;
+                margin: 10px;
+                border-radius: 16px;
+            }
+            .order-modal-header {
+                padding: 15px 20px;
+            }
+            #orderModalBody {
+                padding: 18px;
+            }
+            .order-modal-item {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .order-modal-item .item-info {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar"></div>
+    
+    <div class="admin-page">
+        <div class="container">
+            <div class="admin-header">
+                <div>
+                    <a href="/client/admin.html" class="back-link">← Back to Dashboard</a>
+                    <h1>📦 Orders</h1>
+                </div>
+            </div>
+            
+            <div class="filter-bar">
+                <input type="text" id="searchInput" placeholder="🔍 Search by order ID or customer...">
+                <select id="statusFilter">
+                    <option value="">All Statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="processing">Processing</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <button id="clearFilters" style="padding:10px 20px;border:none;border-radius:10px;background:#1a1a2e;color:#fff;font-weight:600;cursor:pointer;">Clear</button>
+            </div>
+            
+            <div id="ordersContainer">
+                <div style="text-align:center;padding:40px;color:#999;">Loading orders...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- ORDER MODAL -->
+    <!-- ============================================ -->
+    <div id="orderModal" class="order-modal">
+        <div class="order-modal-overlay" onclick="closeOrderModal()"></div>
+        <div class="order-modal-content">
+            <div class="order-modal-header">
+                <h2 id="modalOrderTitle">Order Details</h2>
+                <button class="order-modal-close" onclick="closeOrderModal()">✖</button>
+            </div>
+            <div id="orderModalBody">
+                <!-- Content loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <div id="footer"></div>
+    
+    <script type="module">
+        import Navbar from './components/navbar.js';
+        import Footer from './components/footer.js';
+        import * as api from './assets/js/api.js';
+        
+        Navbar();
+        Footer();
+        
+        const container = document.getElementById('ordersContainer');
+        const searchInput = document.getElementById('searchInput');
+        const statusFilter = document.getElementById('statusFilter');
+        const clearBtn = document.getElementById('clearFilters');
+        
+        let allOrders = [];
+        
+        // ============================================
+        // LOAD ORDERS
+        // ============================================
+        async function loadOrders() {
+            try {
+                const orders = await api.getOrders();
+                console.log('📦 Orders:', orders);
+                
+                if (orders && orders.length > 0) {
+                    allOrders = orders.map(order => ({
+                        ...order,
+                        customer: order.customer?.fullName || order.customer?.name || order.customer || 'Unknown',
+                        email: order.customer?.email || order.email || 'No email',
+                        items: order.items || [],
+                        total: Number(order.total || 0)
+                    }));
+                } else {
+                    allOrders = [
+                        {
+                            _id: 'ORD-001',
+                            customer: 'Ahmed Mohamed',
+                            email: 'ahmed@test.com',
+                            total: 125.50,
+                            status: 'pending',
+                            items: [{ name: 'Product 1', quantity: 2, price: 25.00 }],
+                            createdAt: new Date().toISOString()
+                        },
+                        {
+                            _id: 'ORD-002',
+                            customer: 'Sara Ali',
+                            email: 'sara@test.com',
+                            total: 89.00,
+                            status: 'shipped',
+                            items: [{ name: 'Product 2', quantity: 1, price: 89.00 }],
+                            createdAt: new Date(Date.now() - 86400000).toISOString()
+                        },
+                        {
+                            _id: 'ORD-003',
+                            customer: 'Admin User',
+                            email: 'admin@dopaminebox.com',
+                            total: 210.75,
+                            status: 'delivered',
+                            items: [{ name: 'Product 3', quantity: 3, price: 70.25 }],
+                            createdAt: new Date(Date.now() - 172800000).toISOString()
+                        }
+                    ];
+                }
+                
+                applyFilters();
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                allOrders = [
+                    {
+                        _id: 'ORD-001',
+                        customer: 'Ahmed Mohamed',
+                        email: 'ahmed@test.com',
+                        total: 125.50,
+                        status: 'pending',
+                        items: [{ name: 'Product 1', quantity: 2, price: 25.00 }],
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        _id: 'ORD-002',
+                        customer: 'Sara Ali',
+                        email: 'sara@test.com',
+                        total: 89.00,
+                        status: 'shipped',
+                        items: [{ name: 'Product 2', quantity: 1, price: 89.00 }],
+                        createdAt: new Date(Date.now() - 86400000).toISOString()
+                    }
+                ];
+                applyFilters();
+            }
+        }
+        
+        // ============================================
+        // FILTERS
+        // ============================================
+        function applyFilters() {
+            const search = searchInput.value.toLowerCase();
+            const status = statusFilter.value;
+            
+            let filtered = [...allOrders];
+            
+            if (search) {
+                filtered = filtered.filter(o => 
+                    (o._id || '').toLowerCase().includes(search) ||
+                    (o.customer || '').toLowerCase().includes(search) ||
+                    (o.email || '').toLowerCase().includes(search)
+                );
+            }
+            
+            if (status) {
+                filtered = filtered.filter(o => o.status === status);
+            }
+            
+            renderOrders(filtered);
+        }
+        
+        // ============================================
+        // RENDER ORDERS
+        // ============================================
+        function renderOrders(orders) {
+            if (!orders || orders.length === 0) {
+                container.innerHTML = `
+                    <div class="no-orders">
+                        <h2>📭 No Orders Found</h2>
+                        <p>Try adjusting your filters.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = `
+                <div style="display:flex;justify-content:space-between;margin-bottom:15px;color:#888;font-size:0.9rem;">
+                    <span>Showing ${orders.length} orders</span>
+                </div>
+                <div class="orders-grid">
+                    ${orders.map(order => {
+                        const orderId = order._id || order.id || 'N/A';
+                        const customerName = order.customer || 'Unknown';
+                        const customerEmail = order.email || 'No email';
+                        const total = Number(order.total || 0);
+                        const status = order.status || 'pending';
+                        const itemsCount = order.items?.length || 0;
+                        const createdAt = order.createdAt || new Date().toISOString();
+                        
+                        return `
+                            <div class="order-card">
+                                <div class="order-header">
+                                    <span class="order-id">#${orderId}</span>
+                                    <span class="order-date">${new Date(createdAt).toLocaleDateString()}</span>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:5px;">
+                                    <div>
+                                        <strong>${customerName}</strong>
+                                        <div style="font-size:0.85rem;color:#999;">${customerEmail}</div>
+                                    </div>
+                                    <span class="order-total">$${total.toFixed(2)}</span>
+                                </div>
+                                <div class="order-items">
+                                    ${itemsCount} items
+                                </div>
+                                <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+                                    <span class="order-status status-${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span>
+                                    <div class="order-actions">
+                                        <button class="btn-view" onclick="viewOrder('${orderId}')">👁️ View</button>
+                                        <button class="btn-edit" onclick="editOrder('${orderId}')">✏️ Edit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+        
+        // ============================================
+        // VIEW ORDER
+        // ============================================
+        window.viewOrder = function(orderId) {
+            const order = allOrders.find(o => (o._id || o.id) === orderId);
+            if (!order) {
+                alert('Order not found');
+                return;
+            }
+            
+            const modal = document.getElementById('orderModal');
+            const body = document.getElementById('orderModalBody');
+            const title = document.getElementById('modalOrderTitle');
+            
+            title.textContent = `📦 Order #${orderId}`;
+            
+            body.innerHTML = `
+                <div class="order-detail-row">
+                    <span class="order-detail-label">Customer</span>
+                    <span class="order-detail-value">${order.customer || 'Unknown'}</span>
+                </div>
+                <div class="order-detail-row">
+                    <span class="order-detail-label">Email</span>
+                    <span class="order-detail-value">${order.email || 'No email'}</span>
+                </div>
+                <div class="order-detail-row">
+                    <span class="order-detail-label">Total</span>
+                    <span class="order-detail-value">$${Number(order.total || 0).toFixed(2)}</span>
+                </div>
+                <div class="order-detail-row">
+                    <span class="order-detail-label">Status</span>
+                    <span class="order-detail-value">
+                        <span class="order-status status-${order.status || 'pending'}">
+                            ${(order.status || 'pending').charAt(0).toUpperCase() + (order.status || 'pending').slice(1)}
+                        </span>
+                    </span>
+                </div>
+                <div class="order-detail-row">
+                    <span class="order-detail-label">Date</span>
+                    <span class="order-detail-value">${new Date(order.createdAt).toLocaleString()}</span>
+                </div>
+                
+                <div style="margin-top:20px;border-top:1px solid #eee;padding-top:15px;">
+                    <h4 style="font-size:1rem;font-weight:700;color:#1a1a2e;margin-bottom:10px;">🛍️ Items (${order.items?.length || 0})</h4>
+                    <div class="order-modal-items">
+                        ${(order.items || []).map(item => `
+                            <div class="order-modal-item">
+                                <div class="item-info">
+                                    <div>
+                                        <div class="item-name">${item.name || item.product?.name || 'Unknown'}</div>
+                                        <div class="item-detail">Qty: ${item.quantity || 1} × $${Number(item.price || 0).toFixed(2)}</div>
+                                    </div>
+                                </div>
+                                <span class="item-price">$${Number((item.price || 0) * (item.quantity || 1)).toFixed(2)}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="order-status-update">
+                    <label>✏️ Update Status</label>
+                    <select id="orderStatusSelect">
+                        <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing</option>
+                        <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
+                        <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+                        <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                    </select>
+                    <button class="btn-update" onclick="updateOrderStatus('${orderId}')">✅ Update Status</button>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        };
+        
+        // ============================================
+        // EDIT ORDER
+        // ============================================
+        window.editOrder = function(orderId) {
+            viewOrder(orderId);
+        };
+        
+        // ============================================
+        // UPDATE ORDER STATUS
+        // ============================================
+        window.updateOrderStatus = function(orderId) {
+            const select = document.getElementById('orderStatusSelect');
+            const newStatus = select.value;
+            
+            const order = allOrders.find(o => (o._id || o.id) === orderId);
+            if (order) {
+                order.status = newStatus;
+                applyFilters();
+                closeOrderModal();
+                alert(`✅ Order status updated to: ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}`);
+            } else {
+                alert('❌ Order not found');
+            }
+        };
+        
+        // ============================================
+        // CLOSE MODAL
+        // ============================================
+        window.closeOrderModal = function() {
+            document.getElementById('orderModal').classList.remove('active');
+        };
+        
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        searchInput.addEventListener('input', applyFilters);
+        statusFilter.addEventListener('change', applyFilters);
+        
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            statusFilter.value = '';
+            applyFilters();
+        });
+        
+        // Close modal on Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeOrderModal();
+            }
+        });
+        
+        // ============================================
+        // INIT
+        // ============================================
+        loadOrders();
+    </script>
+</body>
+</html>

@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - Dopamine Box</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================
+           REGISTER PAGE - PREMIUM DESIGN
+        ============================================ */
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f8f9fa 0%, #fff5f7 100%);
+            padding: 40px 20px;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .auth-card {
+            background: #ffffff;
+            padding: 45px 40px 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #ee5a24, #ff6b6b);
+            background-size: 200% 100%;
+            animation: gradientMove 3s ease infinite;
+        }
+
+        @keyframes gradientMove {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .auth-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .auth-back:hover {
+            transform: translateX(-4px);
+            color: #ee5a24;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-header .logo-icon {
+            font-size: 3.5rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .auth-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin: 0;
+        }
+
+        .auth-header h1 span {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auth-header .subtitle {
+            color: #6c757d;
+            font-size: 0.95rem;
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        /* ========== Messages ========== */
+        .auth-message {
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: none;
+        }
+
+        .auth-message.error {
+            display: block;
+            background: #fff5f5;
+            border: 1px solid #fdd;
+            color: #e74c3c;
+        }
+
+        .auth-message.success {
+            display: block;
+            background: #f0fff4;
+            border: 1px solid #b2dfdb;
+            color: #27ae60;
+        }
+
+        /* ========== Form ========== */
+        .auth-form .form-group {
+            margin-bottom: 16px;
+        }
+
+        .auth-form .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #2d3436;
+            margin-bottom: 6px;
+        }
+
+        .auth-form .form-group .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .auth-form .form-group .input-wrapper:focus-within {
+            border-color: #ff6b6b;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.08);
+        }
+
+        .auth-form .form-group .input-wrapper .input-icon {
+            padding: 0 0 0 16px;
+            font-size: 1.1rem;
+            color: #adb5bd;
+            user-select: none;
+        }
+
+        .auth-form .form-group .input-wrapper input {
+            flex: 1;
+            padding: 14px 14px 14px 10px;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: #2d3436;
+            width: 100%;
+        }
+
+        .auth-form .form-group .input-wrapper input::placeholder {
+            color: #adb5bd;
+        }
+
+        .auth-form .form-group .input-wrapper .toggle-password {
+            padding: 0 16px 0 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: #adb5bd;
+            transition: 0.3s;
+        }
+
+        .auth-form .form-group .input-wrapper .toggle-password:hover {
+            color: #ff6b6b;
+        }
+
+        /* ========== Password Strength ========== */
+        .password-strength {
+            margin-top: 8px;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .password-strength .strength-bar {
+            flex: 1;
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .password-strength .strength-bar .fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 4px;
+            transition: width 0.3s ease, background 0.3s ease;
+        }
+
+        .password-strength .strength-text {
+            font-size: 0.75rem;
+            color: #6c757d;
+            font-weight: 500;
+            min-width: 60px;
+            text-align: right;
+        }
+
+        /* ========== Terms ========== */
+        .terms-check {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 16px 0 22px;
+        }
+
+        .terms-check input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #ff6b6b;
+            cursor: pointer;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .terms-check label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            cursor: pointer;
+            line-height: 1.5;
+        }
+
+        .terms-check label a {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .terms-check label a:hover {
+            text-decoration: underline;
+        }
+
+        /* ========== Submit Button ========== */
+        .btn-register {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-register:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255, 107, 107, 0.35);
+        }
+
+        .btn-register:active {
+            transform: translateY(0);
+        }
+
+        .btn-register:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-register .spinner {
+            display: none;
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+
+        .btn-register.loading .spinner {
+            display: block;
+        }
+
+        .btn-register.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ========== Divider ========== */
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 22px 0;
+        }
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e9ecef;
+        }
+
+        .auth-divider span {
+            color: #adb5bd;
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        /* ========== Social Login ========== */
+        .social-login {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            background: #fff;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #2d3436;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .social-btn:active {
+            transform: translateY(0);
+        }
+
+        .social-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .social-btn .social-icon {
+            font-size: 1.3rem;
+        }
+
+        .social-btn.google:hover:not(:disabled) {
+            border-color: #ea4335;
+            background: #fff5f5;
+            color: #ea4335;
+        }
+
+        .social-btn.facebook:hover:not(:disabled) {
+            border-color: #1877f2;
+            background: #f0f4ff;
+            color: #1877f2;
+        }
+
+        /* ========== Footer ========== */
+        .auth-footer {
+            text-align: center;
+            margin-top: 22px;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .auth-footer a {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .auth-footer a:hover {
+            color: #ee5a24;
+            text-decoration: underline;
+        }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 30px 20px 25px;
+                border-radius: 20px;
+            }
+
+            .auth-header h1 {
+                font-size: 1.6rem;
+            }
+
+            .auth-header .logo-icon {
+                font-size: 2.8rem;
+            }
+
+            .auth-form .form-group .input-wrapper input {
+                padding: 12px 12px 12px 8px;
+                font-size: 0.9rem;
+            }
+
+            .social-login {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-register {
+                padding: 14px;
+                font-size: 0.95rem;
+            }
+
+            .terms-check {
+                align-items: flex-start;
+            }
+
+            .terms-check input[type="checkbox"] {
+                margin-top: 3px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-page">
+        <div class="auth-container">
+            <div class="auth-card">
+                <!-- Back Button -->
+                <a href="index.html" class="auth-back">
+                    ← Back to Home
+                </a>
+
+                <!-- Header -->
+                <div class="auth-header">
+                    <span class="logo-icon">🎁</span>
+                    <h1>Create <span>Account</span></h1>
+                    <p class="subtitle">Join the Dopamine Box family</p>
+                </div>
+
+                <!-- Messages -->
+                <div id="errorMsg" class="auth-message error"></div>
+                <div id="successMsg" class="auth-message success"></div>
+
+                <!-- Registration Form -->
+                <form id="registerForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="fullName">👤 Full Name</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">👤</span>
+                            <input 
+                                type="text" 
+                                id="fullName" 
+                                placeholder="Enter your full name" 
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">📧 Email Address</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">@</span>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                placeholder="Enter your email" 
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">🔒 Password</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔑</span>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                placeholder="Create a password" 
+                                required
+                                oninput="checkPasswordStrength(this.value)"
+                            >
+                            <button type="button" class="toggle-password" onclick="togglePassword()">
+                                👁️
+                            </button>
+                        </div>
+                        <div class="password-strength" id="passwordStrength">
+                            <div class="strength-bar">
+                                <div class="fill" id="strengthFill"></div>
+                            </div>
+                            <span class="strength-text" id="strengthText">Weak</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">✅ Confirm Password</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">✓</span>
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                placeholder="Confirm your password" 
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Terms -->
+                    <div class="terms-check">
+                        <input type="checkbox" id="termsCheck" required>
+                        <label for="termsCheck">
+                            I agree to the 
+                            <a href="#" onclick="alert('Terms & Conditions page coming soon!')">Terms of Service</a> 
+                            and 
+                            <a href="#" onclick="alert('Privacy Policy page coming soon!')">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-register" id="registerBtn">
+                        <span class="btn-text">Create Account</span>
+                        <div class="spinner"></div>
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <div class="auth-divider">
+                    <span>or continue with</span>
+                </div>
+
+             <!-- In login.html - Social Login Section -->
+<div class="social-login">
+    <a href="http://localhost:5000/api/auth/google" class="social-btn google">
+        <span class="social-icon">🔵</span>
+        Google
+    </a>
+    <a href="http://localhost:5000/api/auth/facebook" class="social-btn facebook">
+        <span class="social-icon">🔷</span>
+        Facebook
+    </a>
+</div>
+
+                <!-- Footer -->
+                <div class="auth-footer">
+                    Already have an account? <a href="login.html">Sign in</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   <script type="module">
+    import { register } from './assets/js/api.js';
+
+    // ========== Toggle Password Visibility ==========
+    window.togglePassword = function() {
+        const input = document.getElementById('password');
+        const btn = document.querySelector('.toggle-password');
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            btn.textContent = '👁️';
+        }
+    };
+
+    // ========== Password Strength Checker ==========
+    window.checkPasswordStrength = function(password) {
+        const fill = document.getElementById('strengthFill');
+        const text = document.getElementById('strengthText');
+        
+        let score = 0;
+        let strength = 'Weak';
+        let color = '#e74c3c';
+        let width = '20%';
+        
+        if (password.length >= 8) score++;
+        if (password.length >= 12) score++;
+        if (/[A-Z]/.test(password)) score++;
+        if (/[a-z]/.test(password)) score++;
+        if (/[0-9]/.test(password)) score++;
+        if (/[^A-Za-z0-9]/.test(password)) score++;
+        
+        if (score <= 2) {
+            strength = 'Weak';
+            color = '#e74c3c';
+            width = '20%';
+        } else if (score <= 3) {
+            strength = 'Fair';
+            color = '#f39c12';
+            width = '40%';
+        } else if (score <= 4) {
+            strength = 'Good';
+            color = '#3498db';
+            width = '60%';
+        } else if (score <= 5) {
+            strength = 'Strong';
+            color = '#2ecc71';
+            width = '80%';
+        } else {
+            strength = 'Very Strong';
+            color = '#27ae60';
+            width = '100%';
+        }
+        
+        fill.style.width = width;
+        fill.style.background = color;
+        text.textContent = strength;
+        text.style.color = color;
+    };
+
+    // ========== Register Handler ==========
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const fullName = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const termsCheck = document.getElementById('termsCheck').checked;
+        const errorDiv = document.getElementById('errorMsg');
+        const successDiv = document.getElementById('successMsg');
+        const btn = document.getElementById('registerBtn');
+
+        // Hide messages
+        errorDiv.style.display = 'none';
+        successDiv.style.display = 'none';
+
+        // Validate
+        if (!fullName || !email || !password || !confirmPassword) {
+            errorDiv.textContent = '⚠️ Please fill in all fields';
+            errorDiv.className = 'auth-message error';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        if (password.length < 8) {
+            errorDiv.textContent = '⚠️ Password must be at least 8 characters';
+            errorDiv.className = 'auth-message error';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            errorDiv.textContent = '⚠️ Passwords do not match';
+            errorDiv.className = 'auth-message error';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        if (!termsCheck) {
+            errorDiv.textContent = '⚠️ Please agree to the Terms of Service';
+            errorDiv.className = 'auth-message error';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        // Show loading
+        btn.disabled = true;
+        btn.classList.add('loading');
+
+        try {
+            // Register with API
+            const result = await register({
+                fullName,
+                email,
+                password
+            });
+
+            if (result.success) {
+                // Save user and token to localStorage
+                localStorage.setItem('dopamine_token', result.token);
+                localStorage.setItem('dopamine_user', JSON.stringify(result.user));
+
+                // Show success
+                successDiv.textContent = '✅ Account created successfully! Redirecting...';
+                successDiv.className = 'auth-message success';
+                successDiv.style.display = 'block';
+
+                // Redirect to home
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            } else {
+                throw new Error(result.message || 'Registration failed');
+            }
+
+        } catch (error) {
+            errorDiv.textContent = '❌ ' + error.message;
+            errorDiv.className = 'auth-message error';
+            errorDiv.style.display = 'block';
+            btn.disabled = false;
+            btn.classList.remove('loading');
+        }
+    });
+
+    // ========== Social Register ==========
+    window.socialRegister = async function(provider) {
+        const btn = document.querySelector(`.social-btn.${provider}`);
+        const errorDiv = document.getElementById('errorMsg');
+        const successDiv = document.getElementById('successMsg');
+        
+        btn.disabled = true;
+        btn.innerHTML = '⏳ Loading...';
+        errorDiv.style.display = 'none';
+        successDiv.style.display = 'none';
+
+        try {
+            // For demo, create a random email
+            const randomId = Date.now().toString().slice(-6);
+            const email = `${provider}_${randomId}@dopamine.com`;
+            const fullName = provider.charAt(0).toUpperCase() + provider.slice(1) + ' User';
+
+            // Import socialLogin from API
+            const { socialLogin } = await import('./assets/js/api.js');
+            
+            const result = await socialLogin({
+                provider: provider,
+                providerId: provider + '_' + randomId,
+                email: email,
+                fullName: fullName
+            });
+
+            if (result.success) {
+                localStorage.setItem('dopamine_token', result.token);
+                localStorage.setItem('dopamine_user', JSON.stringify(result.user));
+
+                btn.innerHTML = '✅ Done!';
+
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 500);
+            } else {
+                throw new Error(result.message || 'Social login failed');
+            }
+
+        } catch (error) {
+            errorDiv.textContent = '❌ ' + error.message;
+            errorDiv.className = 'auth-message error';
+            errorDiv.style.display = 'block';
+            btn.disabled = false;
+            btn.innerHTML = provider.charAt(0).toUpperCase() + provider.slice(1);
+        }
+    };
+
+    // ========== Enter Key Support ==========
+    document.getElementById('confirmPassword').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            document.getElementById('registerForm').dispatchEvent(new Event('submit'));
+        }
+    });
+</script>
+</body>
+</html>

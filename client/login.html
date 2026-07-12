@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Dopamine Box</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================
+           LOGIN PAGE - PREMIUM DESIGN
+        ============================================ */
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f8f9fa 0%, #fff5f7 100%);
+            padding: 40px 20px;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 440px;
+            margin: 0 auto;
+        }
+
+        .auth-card {
+            background: #ffffff;
+            padding: 45px 40px 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #ee5a24, #ff6b6b);
+            background-size: 200% 100%;
+            animation: gradientMove 3s ease infinite;
+        }
+
+        @keyframes gradientMove {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .auth-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .auth-back:hover {
+            transform: translateX(-4px);
+            color: #ee5a24;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-header .logo-icon {
+            font-size: 3.5rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .auth-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin: 0;
+        }
+
+        .auth-header h1 span {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auth-header .subtitle {
+            color: #6c757d;
+            font-size: 0.95rem;
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        /* ========== Messages ========== */
+        .auth-message {
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: none;
+        }
+
+        .auth-message.error {
+            display: block;
+            background: #fff5f5;
+            border: 1px solid #fdd;
+            color: #e74c3c;
+        }
+
+        .auth-message.success {
+            display: block;
+            background: #f0fff4;
+            border: 1px solid #b2dfdb;
+            color: #27ae60;
+        }
+
+        /* ========== Form ========== */
+        .auth-form .form-group {
+            margin-bottom: 18px;
+        }
+
+        .auth-form .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #2d3436;
+            margin-bottom: 6px;
+        }
+
+        .auth-form .form-group .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .auth-form .form-group .input-wrapper:focus-within {
+            border-color: #ff6b6b;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.08);
+        }
+
+        .auth-form .form-group .input-wrapper .input-icon {
+            padding: 0 0 0 16px;
+            font-size: 1.1rem;
+            color: #adb5bd;
+            user-select: none;
+        }
+
+        .auth-form .form-group .input-wrapper input {
+            flex: 1;
+            padding: 14px 14px 14px 10px;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: #2d3436;
+            width: 100%;
+        }
+
+        .auth-form .form-group .input-wrapper input::placeholder {
+            color: #adb5bd;
+        }
+
+        .auth-form .form-group .input-wrapper .toggle-password {
+            padding: 0 16px 0 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: #adb5bd;
+            transition: 0.3s;
+        }
+
+        .auth-form .form-group .input-wrapper .toggle-password:hover {
+            color: #ff6b6b;
+        }
+
+        /* ========== Form Options ========== */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 6px 0 22px;
+        }
+
+        .form-options .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #6c757d;
+            cursor: pointer;
+        }
+
+        .form-options .remember-me input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #ff6b6b;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .form-options .forgot-link {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .form-options .forgot-link:hover {
+            color: #ee5a24;
+            text-decoration: underline;
+        }
+
+        /* ========== Submit Button ========== */
+        .btn-signin {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-signin:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255, 107, 107, 0.35);
+        }
+
+        .btn-signin:active {
+            transform: translateY(0);
+        }
+
+        .btn-signin:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-signin .spinner {
+            display: none;
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+
+        .btn-signin.loading .spinner {
+            display: block;
+        }
+
+        .btn-signin.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ========== Demo Credentials ========== */
+        .demo-box {
+            background: #f8f9fa;
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px dashed #dee2e6;
+            text-align: center;
+        }
+
+        .demo-box .demo-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .demo-box .demo-cred {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px 20px;
+            font-size: 0.85rem;
+            color: #2d3436;
+        }
+
+        .demo-box .demo-cred code {
+            background: #fff;
+            padding: 3px 10px;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #ff6b6b;
+        }
+
+        .demo-box .demo-cred .cred-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .demo-box .demo-cred .cred-item .label {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        /* ========== Divider ========== */
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 22px 0;
+        }
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e9ecef;
+        }
+
+        .auth-divider span {
+            color: #adb5bd;
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        /* ========== Social Login ========== */
+        .social-login {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            background: #fff;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #2d3436;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .social-btn:active {
+            transform: translateY(0);
+        }
+
+        .social-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .social-btn .social-icon {
+            font-size: 1.3rem;
+        }
+
+        .social-btn.google:hover:not(:disabled) {
+            border-color: #ea4335;
+            background: #fff5f5;
+            color: #ea4335;
+        }
+
+        .social-btn.facebook:hover:not(:disabled) {
+            border-color: #1877f2;
+            background: #f0f4ff;
+            color: #1877f2;
+        }
+
+        /* ========== Footer ========== */
+        .auth-footer {
+            text-align: center;
+            margin-top: 22px;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .auth-footer a {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .auth-footer a:hover {
+            color: #ee5a24;
+            text-decoration: underline;
+        }
+
+        /* ========== Forgot Password Modal ========== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #fff;
+            max-width: 420px;
+            width: 100%;
+            padding: 35px 30px 30px;
+            border-radius: 20px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-box .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .modal-box .modal-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin: 0;
+        }
+
+        .modal-box .modal-header .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #adb5bd;
+            transition: 0.3s;
+            padding: 0 4px;
+        }
+
+        .modal-box .modal-header .close-modal:hover {
+            color: #e74c3c;
+            transform: rotate(90deg);
+        }
+
+        .modal-box .modal-body p {
+            color: #6c757d;
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+        }
+
+        .modal-box .modal-body .input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-box .modal-body .input-wrapper input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            outline: none;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+
+        .modal-box .modal-body .input-wrapper input:focus {
+            border-color: #ff6b6b;
+            box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.08);
+        }
+
+        .modal-box .modal-body .input-wrapper button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .modal-box .modal-body .input-wrapper button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 30px 20px 25px;
+                border-radius: 20px;
+            }
+
+            .auth-header h1 {
+                font-size: 1.6rem;
+            }
+
+            .auth-header .logo-icon {
+                font-size: 2.8rem;
+            }
+
+            .auth-form .form-group .input-wrapper input {
+                padding: 12px 12px 12px 8px;
+                font-size: 0.9rem;
+            }
+
+            .form-options {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .social-login {
+                grid-template-columns: 1fr;
+            }
+
+            .demo-box .demo-cred {
+                flex-direction: column;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .btn-signin {
+                padding: 14px;
+                font-size: 0.95rem;
+            }
+
+            .modal-box {
+                padding: 25px 20px;
+            }
+
+            .modal-box .modal-body .input-wrapper {
+                flex-direction: column;
+            }
+
+            .modal-box .modal-body .input-wrapper button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- No navbar here - we want clean login page -->
+
+    <div class="auth-page">
+        <div class="auth-container">
+            <div class="auth-card">
+                <!-- Back Button -->
+                <a href="index.html" class="auth-back">
+                    ← Back to Home
+                </a>
+
+                <!-- Header -->
+                <div class="auth-header">
+                    <span class="logo-icon">🎁</span>
+                    <h1>Welcome <span>Back</span></h1>
+                    <p class="subtitle">Sign in to your Dopamine Box account</p>
+                </div>
+
+                <!-- Messages -->
+                <div id="errorMsg" class="auth-message error"></div>
+                <div id="successMsg" class="auth-message success"></div>
+
+                <!-- Login Form -->
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="email">📧 Email Address</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">@</span>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                placeholder="Enter your email" 
+                                required 
+                                value="demo@dopamine.com"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">🔒 Password</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔑</span>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                placeholder="Enter your password" 
+                                required 
+                                value="password123"
+                            >
+                            <button type="button" class="toggle-password" onclick="togglePassword()">
+                                👁️
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox" id="rememberMe" checked> Remember me
+                        </label>
+                        <a href="#" class="forgot-link" onclick="openForgotModal(event)">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn-signin" id="signinBtn">
+                        <span class="btn-text">Sign In</span>
+                        <div class="spinner"></div>
+                    </button>
+                </form>
+
+                <!-- Demo Credentials -->
+                <div class="demo-box">
+                    <span class="demo-label">🔑 Demo Credentials</span>
+                    <div class="demo-cred">
+                        <span class="cred-item">
+                            <span class="label">Email:</span>
+                            <code>demo@dopamine.com</code>
+                        </span>
+                        <span class="cred-item">
+                            <span class="label">Password:</span>
+                            <code>password123</code>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Divider -->
+                <div class="auth-divider">
+                    <span>or continue with</span>
+                </div>
+
+                <!-- In login.html - Social Login Section -->
+<div class="social-login">
+    <a href="http://localhost:5000/api/auth/google" class="social-btn google">
+        <span class="social-icon">🔵</span>
+        Google
+    </a>
+    <a href="http://localhost:5000/api/auth/facebook" class="social-btn facebook">
+        <span class="social-icon">🔷</span>
+        Facebook
+    </a>
+</div>
+
+                <!-- Footer -->
+                <div class="auth-footer">
+                    Don't have an account? <a href="register.html">Create one</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== Forgot Password Modal ========== -->
+    <div class="modal-overlay" id="forgotModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>🔑 Reset Password</h3>
+                <button class="close-modal" onclick="closeForgotModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p>Enter your email address and we'll send you a link to reset your password.</p>
+                <div class="input-wrapper">
+                    <input type="email" id="resetEmail" placeholder="Enter your email">
+                    <button onclick="sendResetLink()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- No footer here either -->
+<script type="module">
+
+    import { login } from './assets/js/api.js';
+
+    // ========== Check if already logged in ==========
+    (function checkAuth() {
+        const token = localStorage.getItem('dopamine_token');
+        const userData = localStorage.getItem('dopamine_user');
+        
+        if (token && userData) {
+            try {
+                const user = JSON.parse(userData);
+                console.log('👤 Already logged in as:', user.email);
+                
+                // If admin, redirect to admin page
+                if (user.role === 'admin') {
+                    window.location.href = 'admin.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
+            } catch (e) {
+                console.error('Error parsing user data:', e);
+            }
+        }
+    })();
+
+    // ========== Toggle Password Visibility ==========
+    window.togglePassword = function() {
+        const input = document.getElementById('password');
+        const btn = document.querySelector('.toggle-password');
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            btn.textContent = '👁️';
+        }
+    };
+
+    // ========== Login Handler ==========
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const rememberMe = document.getElementById('rememberMe').checked;
+        const errorDiv = document.getElementById('errorMsg');
+        const successDiv = document.getElementById('successMsg');
+        const btn = document.getElementById('signinBtn');
+
+        // Hide messages
+        errorDiv.style.display = 'none';
+        successDiv.style.display = 'none';
+
+        if (!email || !password) {
+            errorDiv.textContent = '⚠️ Please fill in all fields';
+            errorDiv.className = 'auth-message error';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        btn.disabled = true;
+        btn.classList.add('loading');
+
+        try {
+            const result = await login(email, password);
+
+            if (result.success) {
+                // ✅ User data is already saved in api.js login function
+                // But double-check it was saved
+                const savedUser = localStorage.getItem('dopamine_user');
+                const savedToken = localStorage.getItem('dopamine_token');
+                
+                console.log('✅ Saved user:', savedUser);
+                console.log('✅ Saved token:', savedToken ? 'exists' : 'missing');
+
+                successDiv.textContent = '✅ Login successful! Redirecting...';
+                successDiv.className = 'auth-message success';
+                successDiv.style.display = 'block';
+
+                // ✅ Redirect based on role
+                setTimeout(() => {
+                    if (result.user && result.user.role === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                }, 800);
+            } else {
+                throw new Error(result.message || 'Login failed');
+            }
+
+        } catch (error) {
+            errorDiv.textContent = '❌ ' + error.message;
+            errorDiv.className = 'auth-message error';
+            errorDiv.style.display = 'block';
+            btn.disabled = false;
+            btn.classList.remove('loading');
+        }
+    });
+
+    // ========== Social Login ==========
+    window.socialLogin = async function(provider) {
+        const btn = document.querySelector(`.social-btn.${provider}`);
+        const errorDiv = document.getElementById('errorMsg');
+        const successDiv = document.getElementById('successMsg');
+        
+        btn.disabled = true;
+        btn.innerHTML = '⏳ Loading...';
+        errorDiv.style.display = 'none';
+        successDiv.style.display = 'none';
+
+        try {
+            const { socialLogin } = await import('./assets/js/api.js');
+            
+            const randomId = Date.now().toString().slice(-6);
+            const email = `${provider}_${randomId}@dopamine.com`;
+            const fullName = provider.charAt(0).toUpperCase() + provider.slice(1) + ' User';
+
+            const result = await socialLogin({
+                provider: provider,
+                providerId: provider + '_' + randomId,
+                email: email,
+                fullName: fullName
+            });
+
+            if (result.success) {
+                localStorage.setItem('dopamine_token', result.token);
+                localStorage.setItem('dopamine_user', JSON.stringify(result.user));
+                sessionStorage.setItem('dopamine_token', result.token);
+                sessionStorage.setItem('dopamine_user', JSON.stringify(result.user));
+
+                btn.innerHTML = '✅ Done!';
+
+                setTimeout(() => {
+                    if (result.user && result.user.role === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                }, 500);
+            } else {
+                throw new Error(result.message || 'Social login failed');
+            }
+
+        } catch (error) {
+            errorDiv.textContent = '❌ ' + error.message;
+            errorDiv.className = 'auth-message error';
+            errorDiv.style.display = 'block';
+            btn.disabled = false;
+            btn.innerHTML = provider.charAt(0).toUpperCase() + provider.slice(1);
+        }
+    };
+
+    // ========== Forgot Password Modal ==========
+    window.openForgotModal = function(event) {
+        if (event) event.preventDefault();
+        document.getElementById('forgotModal').classList.add('active');
+    };
+
+    window.closeForgotModal = function() {
+        document.getElementById('forgotModal').classList.remove('active');
+    };
+
+    window.sendResetLink = function() {
+        const email = document.getElementById('resetEmail').value.trim();
+        if (!email) {
+            alert('⚠️ Please enter your email address.');
+            return;
+        }
+        alert(`✅ Password reset link sent to ${email}\n\nCheck your email for instructions.`);
+        document.getElementById('resetEmail').value = '';
+        closeForgotModal();
+    };
+
+    // Close modal on overlay click
+    document.getElementById('forgotModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeForgotModal();
+        }
+    });
+
+    // Enter key support
+    document.getElementById('password').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+        }
+    });
+
+    document.getElementById('resetEmail').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendResetLink();
+        }
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product - Dopamine Box</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .product-page { padding: 40px 0 60px; background: #f8f9fa; min-height: 100vh; }
+        .product-detail-wrapper { background: #fff; border-radius: 24px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.04); }
+        .product-image-main { background: #f8f9fa; border-radius: 16px; overflow: hidden; position: relative; min-height: 400px; display: flex; align-items: center; justify-content: center; }
+        .product-image-main img { width: 100%; height: 100%; max-height: 500px; object-fit: contain; transition: transform 0.5s ease; }
+        .product-image-main img:hover { transform: scale(1.03); }
+        .product-info-main h1 { font-size: 2.2rem; font-weight: 800; color: #1a1a2e; margin: 0 0 10px; line-height: 1.2; }
+        .product-info-main .category-badge { display: inline-block; padding: 4px 16px; background: #f8f9fa; border-radius: 30px; font-size: 0.8rem; font-weight: 600; color: #6c757d; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+        .product-info-main .price-large { font-size: 2.5rem; font-weight: 800; color: #ff6b6b; margin: 15px 0; }
+        .product-info-main .description { color: #6c757d; line-height: 1.8; font-size: 1.05rem; margin: 15px 0 20px; }
+        .product-info-main .meta-tags { display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0; }
+        .product-info-main .meta-tags span { padding: 6px 16px; background: #f8f9fa; border-radius: 30px; font-size: 0.85rem; font-weight: 500; color: #2d3436; }
+        .product-info-main .stock-status { font-weight: 600; padding: 8px 0; margin: 10px 0; }
+        .product-info-main .stock-status.in-stock { color: #27ae60; }
+        .product-info-main .stock-status.out-of-stock { color: #e74c3c; }
+        .btn-add-to-cart-large { width: 100%; padding: 16px; background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: #fff; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: 0.3s; font-family: inherit; margin-top: 15px; }
+        .btn-add-to-cart-large:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255,107,107,0.35); }
+        .btn-add-to-cart-large:disabled { background: #ccc; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+        .btn-add-to-cart-large.added { background: #27ae60; }
+        .related-section { margin-top: 50px; }
+        .related-section h2 { font-size: 1.6rem; font-weight: 800; color: #1a1a2e; margin-bottom: 25px; position: relative; padding-bottom: 12px; }
+        .related-section h2::after { content: ''; position: absolute; bottom: 0; left: 0; width: 50px; height: 4px; background: linear-gradient(90deg, #ff6b6b, #ee5a24); border-radius: 4px; }
+        .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
+        .related-grid .product-card { background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid #eee; transition: 0.3s; }
+        .related-grid .product-card:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+        .related-grid .product-card a { text-decoration: none; color: inherit; display: block; }
+        .related-grid .product-card img { width: 100%; height: 200px; object-fit: cover; }
+        .related-grid .product-card h3 { font-size: 1rem; padding: 10px 15px 5px; margin: 0; }
+        .related-grid .product-card p { padding: 0 15px 10px; color: #ff6b6b; font-weight: 700; font-size: 1.1rem; }
+        .related-grid .product-card .btn-add-to-cart { width: calc(100% - 30px); margin: 0 15px 15px; padding: 10px; background: #ff6b6b; color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .related-grid .product-card .btn-add-to-cart:hover { background: #ee5a24; }
+        .back-link-product { display: inline-flex; align-items: center; gap: 8px; color: #ff6b6b; text-decoration: none; font-weight: 600; margin-bottom: 20px; transition: 0.3s; }
+        .back-link-product:hover { transform: translateX(-5px); color: #ee5a24; }
+        .error-container { text-align: center; padding: 60px 20px; background: #fff; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
+        .error-container .icon { font-size: 4rem; display: block; margin-bottom: 15px; }
+        .error-container h2 { color: #1a1a2e; font-size: 1.8rem; }
+        .error-container p { color: #6c757d; }
+        @media (max-width: 768px) {
+            .product-detail-wrapper { padding: 20px; }
+            .product-image-main { min-height: 250px; }
+            .product-image-main img { max-height: 300px; }
+            .product-info-main h1 { font-size: 1.6rem; }
+            .product-info-main .price-large { font-size: 2rem; }
+            .related-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar"></div>
+
+    <div class="product-page">
+        <div class="container">
+            <div id="productDetails"></div>
+            <div id="relatedProducts" class="related-section"></div>
+        </div>
+    </div>
+
+    <div id="footer"></div>
+
+    <script type="module">
+        import Navbar from './components/navbar.js';
+        import Footer from './components/footer.js';
+        import { getProductById, getProducts } from './assets/js/api.js';
+        import { addToCart } from './assets/js/storage.js';
+
+        Navbar();
+        Footer();
+
+        const container = document.getElementById('productDetails');
+        const relatedContainer = document.getElementById('relatedProducts');
+
+        function getImageUrl(image) {
+            const API = 'http://localhost:5000';
+            const PLACEHOLDER = 'https://via.placeholder.com/300x300?text=No+Image';
+            if (!image) return PLACEHOLDER;
+            if (image.startsWith('http')) return image;
+            if (image.startsWith('/')) return `${API}${image}`;
+            return `${API}/${image}`;
+        }
+
+        function renderProduct(product) {
+            if (!product) {
+                console.error('❌ No product to render');
+                return;
+            }
+
+            console.log('🖼️ Rendering product:', product);
+
+            const id = product._id || product.id;
+            const inStock = (product.stock || 0) > 0;
+            const imageUrl = getImageUrl(product.image);
+            const category = product.category || 'Uncategorized';
+            const price = typeof product.price === 'number' ? product.price.toFixed(2) : '0.00';
+
+            document.title = `${product.name || 'Product'} - Dopamine Box`;
+
+            container.innerHTML = `
+                <div class="product-detail-wrapper">
+                    <a href="products.html" class="back-link-product">← Back to Products</a>
+                    
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:10px;">
+                        <div class="product-image-main">
+                            <img 
+                                src="${imageUrl}" 
+                                alt="${product.name || 'Product'}"
+                                loading="lazy"
+                                onerror="this.onerror=null; this.src='https://via.placeholder.com/300x300?text=No+Image'"
+                            />
+                            ${product.isFeatured ? `
+                                <span style="position:absolute;top:15px;left:15px;background:linear-gradient(135deg,#f1c40f,#f39c12);color:#fff;padding:6px 16px;border-radius:30px;font-size:0.75rem;font-weight:700;box-shadow:0 4px 15px rgba(241,196,15,0.3);">
+                                    ⭐ Featured
+                                </span>
+                            ` : ''}
+                            ${!inStock ? `
+                                <span style="position:absolute;bottom:15px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);color:#fff;padding:8px 24px;border-radius:30px;font-weight:700;font-size:0.9rem;backdrop-filter:blur(4px);">
+                                    Out of Stock
+                                </span>
+                            ` : ''}
+                        </div>
+
+                        <div class="product-info-main">
+                            <span class="category-badge">${category}</span>
+                            
+                            <h1>${product.name || 'Unnamed Product'}</h1>
+                            
+                            <div class="price-large">$${price}</div>
+                            
+                            <p class="description">${product.description || 'No description available.'}</p>
+
+                            <div class="meta-tags">
+                                ${product.mood ? `<span>🎯 ${product.mood}</span>` : ''}
+                                ${product.occasion ? `<span>🎉 ${product.occasion}</span>` : ''}
+                                ${product.isFeatured ? `<span>⭐ Featured</span>` : ''}
+                                ${product.isCustomizable ? `<span>✨ Customizable</span>` : ''}
+                            </div>
+
+                            <div class="stock-status ${inStock ? 'in-stock' : 'out-of-stock'}">
+                                ${inStock ? `✅ ${product.stock} items in stock` : '❌ Out of stock'}
+                            </div>
+
+                            <button class="btn-add-to-cart-large" data-id="${id}" ${!inStock ? 'disabled' : ''}>
+                                ${inStock ? '🛒 Add to Cart' : 'Out of Stock'}
+                            </button>
+
+                            <div style="display:flex;gap:20px;margin-top:15px;font-size:0.85rem;color:#6c757d;">
+                                <span>🔒 Secure checkout</span>
+                                <span>🚚 Free shipping over $50</span>
+                                <span>💳 Secure payment</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.querySelector('#productDetails .btn-add-to-cart-large')?.addEventListener('click', function() {
+                const id = this.dataset.id;
+                if (id) {
+                    addToCart(id, 1);
+                    import('./assets/js/storage.js').then(({ updateCartBadge }) => {
+                        updateCartBadge();
+                    });
+                    this.textContent = '✅ Added!';
+                    this.classList.add('added');
+                    setTimeout(() => {
+                        this.textContent = '🛒 Add to Cart';
+                        this.classList.remove('added');
+                    }, 2000);
+                }
+            });
+        }
+
+        function renderRelatedProducts(products) {
+            if (!products || products.length === 0) {
+                relatedContainer.innerHTML = '';
+                return;
+            }
+
+            relatedContainer.innerHTML = `
+                <h2>Related Products</h2>
+                <div class="related-grid">
+                    ${products.map(product => `
+                        <div class="product-card">
+                            <a href="product.html?id=${product._id}">
+                                <img 
+                                    src="${getImageUrl(product.image)}" 
+                                    alt="${product.name}"
+                                    onerror="this.onerror=null; this.src='https://via.placeholder.com/300x300?text=No+Image'"
+                                />
+                                <h3>${product.name}</h3>
+                                <p>$${Number(product.price).toFixed(2)}</p>
+                            </a>
+                            <button class="btn-add-to-cart" data-id="${product._id}">
+                                🛒 Add to Cart
+                            </button>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            relatedContainer.querySelectorAll('.btn-add-to-cart').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const id = this.dataset.id;
+                    if (id) {
+                        addToCart(id, 1);
+                        import('./assets/js/storage.js').then(({ updateCartBadge }) => {
+                            updateCartBadge();
+                        });
+                        this.textContent = '✅ Added!';
+                        setTimeout(() => {
+                            this.textContent = '🛒 Add to Cart';
+                        }, 2000);
+                    }
+                });
+            });
+        }
+
+        async function loadProduct() {
+            const params = new URLSearchParams(window.location.search);
+            const productId = params.get('id');
+            
+            console.log('🔍 Product ID from URL:', productId);
+            
+            if (!productId) {
+                container.innerHTML = `
+                    <div class="error-container">
+                        <span class="icon">❌</span>
+                        <h2>No Product ID Provided</h2>
+                        <p>Please provide a product ID in the URL.</p>
+                        <a href="products.html" class="back-link-product" style="justify-content:center;margin-top:15px;">← Back to Products</a>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:5000/api/products/${productId}`);
+                const data = await response.json();
+                console.log('📦 Data from API:', data);
+
+                let product = null;
+                if (data.success && data.message && data.message.product) {
+                    product = data.message.product;
+                } else if (data._id) {
+                    product = data;
+                }
+
+                if (!product) {
+                    container.innerHTML = `
+                        <div class="error-container">
+                            <span class="icon">🔍</span>
+                            <h2>Product Not Found</h2>
+                            <p>The product with ID "${productId}" doesn't exist.</p>
+                            <a href="products.html" class="back-link-product" style="justify-content:center;margin-top:15px;">← Back to Products</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                renderProduct(product);
+
+                const related = data.message?.related || [];
+                renderRelatedProducts(related);
+
+            } catch (error) {
+                console.error('❌ Error loading product:', error);
+                container.innerHTML = `
+                    <div class="error-container">
+                        <span class="icon">⚠️</span>
+                        <h2>Error Loading Product</h2>
+                        <p>${error.message || 'Please try again later.'}</p>
+                        <a href="products.html" class="back-link-product" style="justify-content:center;margin-top:15px;">← Back to Products</a>
+                    </div>
+                `;
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadProduct);
+        } else {
+            loadProduct();
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - Dopamine Box</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .confirmation-container {
+            max-width: 700px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        .confirmation-card {
+            background: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+        .confirmation-card .icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .confirmation-card h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #27ae60;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        .confirmation-card .subtitle {
+            text-align: center;
+            color: #777;
+            margin-bottom: 20px;
+        }
+        .order-id-box {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 15px 0;
+        }
+        .order-id-box .label {
+            font-size: 13px;
+            color: #888;
+            display: block;
+        }
+        .order-id-box .id {
+            font-size: 22px;
+            font-weight: 700;
+            color: #222;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+        .order-id-box .date {
+            font-size: 13px;
+            color: #888;
+            display: block;
+            margin-top: 5px;
+        }
+        .order-section {
+            margin: 25px 0;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 12px;
+        }
+        .order-section h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 12px;
+        }
+        .order-section .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 14px;
+            color: #555;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .order-section .detail-row:last-child {
+            border-bottom: none;
+        }
+        .order-section .detail-row .label {
+            color: #888;
+        }
+        .order-section .detail-row .value {
+            font-weight: 500;
+            color: #222;
+        }
+        .order-items {
+            margin: 10px 0;
+        }
+        .order-item-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+        .order-item-row:last-child {
+            border-bottom: none;
+        }
+        .order-item-row .item-name {
+            color: #333;
+        }
+        .order-item-row .item-price {
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+        .order-total-box {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0 5px;
+            border-top: 2px solid #eee;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .order-total-box .total-amount {
+            color: #ff6b6b;
+            font-size: 22px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-processing { background: #cce5ff; color: #004085; }
+        .status-shipped { background: #d4edda; color: #155724; }
+        .status-delivered { background: #d4edda; color: #155724; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+        .btn-group a {
+            padding: 12px 30px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .btn-primary {
+            background: #ff6b6b;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255,107,107,0.3);
+        }
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #555;
+        }
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        .btn-outline {
+            background: transparent;
+            color: #ff6b6b;
+            border: 2px solid #ff6b6b;
+        }
+        .btn-outline:hover {
+            background: #ff6b6b;
+            color: #fff;
+        }
+        .loading-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+        .shipping-address {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+        }
+        .shipping-address p {
+            margin: 4px 0;
+            font-size: 14px;
+            color: #555;
+        }
+        .shipping-address .name {
+            font-weight: 600;
+            color: #222;
+        }
+        @media (max-width: 480px) {
+            .confirmation-card {
+                padding: 20px;
+            }
+            .btn-group a {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar"></div>
+    
+    <div class="container">
+        <div class="confirmation-container" id="confirmationContent">
+            <div class="loading-state">
+                <p>🔄 Loading order details...</p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="footer"></div>
+    
+    <script type="module">
+        import Navbar from './components/navbar.js';
+        import Footer from './components/footer.js';
+        import { getOrder } from './assets/js/api.js';
+        
+        Navbar();
+        Footer();
+        
+        const params = new URLSearchParams(window.location.search);
+        const orderId = params.get('id');
+        
+        async function loadOrder() {
+            const container = document.getElementById('confirmationContent');
+            
+            if (!orderId) {
+                container.innerHTML = `
+                    <div class="confirmation-card" style="text-align:center;padding:40px;">
+                        <div style="font-size:3rem;">❌</div>
+                        <h2 style="color:#e74c3c;">No Order ID</h2>
+                        <p style="color:#999;">No order ID was provided.</p>
+                        <a href="index.html" class="btn-primary" style="display:inline-block;padding:12px 30px;background:#ff6b6b;color:#fff;border-radius:12px;text-decoration:none;font-weight:600;margin-top:15px;">
+                            Go Home
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                // Try to get order from API first
+                let order = await getOrder(orderId);
+                
+                // If not found in API, check localStorage
+                if (!order) {
+                    const orders = JSON.parse(localStorage.getItem('dopamine_orders') || '[]');
+                    order = orders.find(o => o.orderId === orderId);
+                }
+                
+                if (!order) {
+                    container.innerHTML = `
+                        <div class="confirmation-card" style="text-align:center;padding:40px;">
+                            <div style="font-size:3rem;">🔍</div>
+                            <h2 style="color:#e74c3c;">Order Not Found</h2>
+                            <p style="color:#999;">We couldn't find order #${orderId}</p>
+                            <a href="index.html" class="btn-primary" style="display:inline-block;padding:12px 30px;background:#ff6b6b;color:#fff;border-radius:12px;text-decoration:none;font-weight:600;margin-top:15px;">
+                                Go Home
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                renderOrder(order);
+                
+            } catch (error) {
+                console.error('Error loading order:', error);
+                container.innerHTML = `
+                    <div class="confirmation-card" style="text-align:center;padding:40px;">
+                        <div style="font-size:3rem;">⚠️</div>
+                        <h2 style="color:#e74c3c;">Error Loading Order</h2>
+                        <p style="color:#999;">${error.message}</p>
+                        <a href="index.html" class="btn-primary" style="display:inline-block;padding:12px 30px;background:#ff6b6b;color:#fff;border-radius:12px;text-decoration:none;font-weight:600;margin-top:15px;">
+                            Go Home
+                        </a>
+                    </div>
+                `;
+            }
+        }
+        
+        function renderOrder(order) {
+            const statusClass = `status-${order.status || 'pending'}`;
+            const statusLabel = order.status || 'Pending';
+            
+            // Handle both API and localStorage order formats
+            const items = order.items || [];
+            const customer = order.customer || order;
+            const orderDate = order.orderDate || new Date().toISOString();
+            
+            document.getElementById('confirmationContent').innerHTML = `
+                <div class="confirmation-card">
+                    <div class="icon">🎉</div>
+                    <h1>Order Confirmed!</h1>
+                    <p class="subtitle">Thank you for your purchase! Your order has been placed successfully.</p>
+                    
+                    <div class="order-id-box">
+                        <span class="label">Order ID</span>
+                        <span class="id">#${order.orderId || orderId}</span>
+                        <span class="date">${new Date(orderDate).toLocaleDateString('en-US', { 
+                            weekday: 'long', 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}</span>
+                    </div>
+                    
+                    <div style="text-align:center;margin:15px 0;">
+                        <span class="status-badge ${statusClass}">${statusLabel.toUpperCase()}</span>
+                    </div>
+                    
+                    <div class="order-section">
+                        <h3>📦 Order Items</h3>
+                        <div class="order-items">
+                            ${items.map(item => `
+                                <div class="order-item-row">
+                                    <span class="item-name">${item.name || item.productName || 'Unknown'} × ${item.quantity}</span>
+                                    <span class="item-price">$${((item.price || 0) * item.quantity).toFixed(2)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="order-total-box">
+                            <span>Total</span>
+                            <span class="total-amount">$${(order.total || 0).toFixed(2)}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="order-section">
+                        <h3>📍 Shipping Details</h3>
+                        <div class="shipping-address">
+                            <p class="name">${customer.fullName || customer.name || 'N/A'}</p>
+                            <p>${customer.address || 'N/A'}</p>
+                            <p>${customer.city || 'N/A'}, ${customer.country || 'N/A'}</p>
+                            <p>📧 ${customer.email || 'N/A'}</p>
+                            <p>📞 ${customer.phone || 'N/A'}</p>
+                        </div>
+                    </div>
+                    
+                    ${order.notes ? `
+                        <div class="order-section">
+                            <h3>📝 Notes</h3>
+                            <p style="color:#555;font-size:14px;margin:0;">${order.notes}</p>
+                        </div>
+                    ` : ''}
+                    
+                    <div style="background:#f8f9fa;padding:15px;border-radius:12px;font-size:13px;color:#666;margin:15px 0;">
+                        <p style="margin:0;">📧 A confirmation email has been sent to ${customer.email || 'your email'}</p>
+                        <p style="margin:5px 0 0;">📦 Estimated delivery: 3-5 business days</p>
+                        <p style="margin:5px 0 0;">💳 You will be charged $${(order.total || 0).toFixed(2)}</p>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <a href="index.html" class="btn-primary">Continue Shopping</a>
+                        <a href="products.html" class="btn-secondary">Browse More</a>
+                        <a href="#" onclick="window.print()" class="btn-outline">🖨️ Print</a>
+                    </div>
+                </div>
+            `;
+        }
+        
+        loadOrder();
+    </script>
+</body>
+</html>
