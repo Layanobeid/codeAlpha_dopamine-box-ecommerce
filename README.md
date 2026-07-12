@@ -71,7 +71,7 @@ dopamine-box-ecommerce/
 
 | Role | Email | Password |
 |---|---|---|
-| **Admin** | `admin@dopaminebox.com` | `Admin@123456` |
+| **Admin** | `admin@dopaminebox.com` | `P@ssw0rd` |
 
 ---
 
