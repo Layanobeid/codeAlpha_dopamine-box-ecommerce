@@ -1,5 +1,5 @@
 const Message = require('../models/Message.model');
-const User = require('../models/user.model');
+const User = require('../models/User.model');
 
 // ============================================
 // GET ALL MESSAGES FOR A USER
