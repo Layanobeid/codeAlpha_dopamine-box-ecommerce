@@ -34,6 +34,35 @@ Require stack:
 Node.js v24.14.1
 ==> Exited with status 1
 ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+}
+Node.js v24.14.1
+==> Deploying...
+==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
+  throw err;
+  ^
+Error: Cannot find module '../models/user.model'
+Require stack:
+- /opt/render/project/src/server/routes/authRoute.js
+- /opt/render/project/src/server/app.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1456:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1066:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1071:22)
+    at Module._load (node:internal/modules/cjs/loader:1242:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.require (node:internal/modules/cjs/loader:1556:12)
+    at require (node:internal/modules/helpers:152:16)
+    at Object.<anonymous> (/opt/render/project/src/server/routes/authRoute.js:7:14)
+    at Module._compile (node:internal/modules/cjs/loader:1812:14)
+    at Object..js (node:internal/modules/cjs/loader:1943:10) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/opt/render/project/src/server/routes/authRoute.js',
+    '/opt/render/project/src/server/app.js'
+  ]
+}
+Node.js v24.14.1
+==> Exited with status 1
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dopamine_box_secret_key_2024';
 
