@@ -1,6 +1,6 @@
 // components/productCard.js - PREMIUM VERSION
 
-const API = 'http://localhost:5000';
+const API = 'https://codealpha-dopamine-box-ecommerce.onrender.com'';
 
 function getImageUrl(image) {
     const PLACEHOLDER = 'https://via.placeholder.com/300x300/f0f0f0/999?text=No+Image';
