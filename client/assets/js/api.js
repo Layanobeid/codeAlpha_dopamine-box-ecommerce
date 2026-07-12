@@ -1,6 +1,6 @@
 // assets/js/api.js - COMPLETE FIXED VERSION
 
-//const API = 'http://localhost:5000/api';
+const API_URL ='https://codealpha-dopamine-box-ecommerce.onrender.com/api';
 const API = 'https://codealpha-dopamine-box-ecommerce.onrender.com/api';
 
 // ============ HELPER: Get Auth Headers ============
