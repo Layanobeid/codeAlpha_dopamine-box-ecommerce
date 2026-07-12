@@ -72,7 +72,7 @@ export async function getProducts() {
 
 export async function getProductById(id) {
     try {
-        const API_URL = 'http://localhost:5000/api';
+        const API_URL = 'https://codealpha-dopamine-box-ecommerce.onrender.com/api';
         const response = await fetch(`${API_URL}/products/${id}`);
         
         if (!response.ok) {
