@@ -8,47 +8,48 @@ const errorHandler = require("./middleware/error.middleware");
 const rateLimiter = require("./middleware/rateLimit.middleware");
 const logger = require("./core/logger");
 const path = require("path");
-const MONGODB_URI = 'mongodb+srv://layanobeid30_db_user:rPHOeybWvlFQZLSG@cluster0.ibzl2tk.mongodb.net/ecommerce'; // Replace <db_password> with your actual password
+const fs = require("fs");
+
 const app = express();
-const messageRoutes = require('./routes/messageRoutes');
+
 // ============================================
 // ⭐⭐⭐ CORS - MUST BE FIRST ⭐⭐⭐
 // ============================================
 const allowedOrigins = [
-   'https://dopaminebox11.netlify.app/',
-  "http://localhost:5500",
-  "http://127.0.0.1:5500",
-  "http://localhost:5501",
-  "http://127.0.0.1:5501",
-  "http://localhost:5502",
-  "http://127.0.0.1:5502",
-  "http://localhost:5173",
-  "http://127.0.0.1:5173",
-  "http://localhost:3000",
-  "http://127.0.0.1:3000",
+  'https://dopaminebox11.netlify.app', // ✅ بدون / في النهاية
+  'https://dopaminebox2.netlify.app',
+  'http://localhost:5500',
+  'http://127.0.0.1:5500',
+  'http://localhost:5501',
+  'http://127.0.0.1:5501',
+  'http://localhost:5502',
+  'http://127.0.0.1:5502',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000'
 ];
 
-// ✅ CUSTOM CORS MIDDLEWARE - Overrides everything
+// ✅ CORS MIDDLEWARE
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   
-  // Allow specific origins
+  // السماح للأصول المسموح بها
   if (origin && allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
-    console.log("✅ CORS allowed: ${origin}");
+    console.log(`✅ CORS allowed: ${origin}`);
   } else if (origin) {
-    console.log("❌ CORS blocked: ${origin}");
+    console.log(`❌ CORS blocked: ${origin}`);
   }
 
-  
-  // Set all CORS headers
+  // إعدادات CORS
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
   res.setHeader('Access-Control-Expose-Headers', 'Authorization');
   res.setHeader('Access-Control-Max-Age', '86400');
   
-  // Handle preflight
+  // التعامل مع طلبات OPTIONS (preflight)
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
   }
@@ -61,7 +62,7 @@ app.use((req, res, next) => {
 // ============================================
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
-  contentSecurityPolicy: false // Disable for development
+  contentSecurityPolicy: false
 }));
 
 // ============================================
@@ -71,14 +72,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // ============================================
-// Rate Limiting
-// ============================================
-//app.use(rateLimiter);
-
-// ============================================
 // Static Files
 // ============================================
-app.use(express.static(path.join(__dirname, "client")));
+app.use('/images', express.static(path.join(__dirname, 'public/images'), {
+  maxAge: 0,
+  etag: false,
+  lastModified: false,
+  setHeaders: (res, path) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+}));
 
 // ============================================
 // Routes
