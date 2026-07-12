@@ -1,7 +1,7 @@
 // server/routes/userRoute.js
 const express = require("express");
 const router = express.Router();
-const User = require("../models/user.model"); // ← FIXED: lowercase u
+const User = require("../models/User.model"); // ← FIXED: lowercase u
 
 // 🔹 Get all users
 router.get("/", async (req, res) => {
