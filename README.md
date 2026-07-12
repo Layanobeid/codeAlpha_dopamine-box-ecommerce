@@ -45,3 +45,46 @@
 ---
 
 ## 📂 Project Structure
+dopamine-box-ecommerce/
+├── client/
+│ ├── assets/
+│ │ ├── css/ # Styles
+│ │ └── js/ # API calls, utilities
+│ ├── components/ # Reusable components
+│ ├── pages/ # HTML pages
+│ └── index.html
+├── server/
+│ ├── controllers/ # Business logic
+│ ├── models/ # MongoDB schemas
+│ ├── routes/ # API endpoints
+│ ├── services/ # Business services
+│ ├── middleware/ # Auth, validation
+│ └── scripts/ # Seed, admin creation
+├── .env # Environment variables
+├── package.json
+└── README.md
+
+
+---
+
+## 🔐 Admin Credentials
+
+| Role | Email | Password |
+|---|---|---|
+| **Admin** | `admin@dopaminebox.com` | `Admin@123456` |
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js (v16+)
+- MongoDB Atlas account (or local MongoDB)
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/Layanobeid/dopamine-box-ecommerce.git
+cd dopamine-box-ecommerce
